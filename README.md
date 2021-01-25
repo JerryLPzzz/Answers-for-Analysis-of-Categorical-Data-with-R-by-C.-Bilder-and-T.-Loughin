@@ -1,5 +1,4 @@
 # STAT475 Assignment Section
- STAT475 Assignment Section
 
 "Analysis of Categorical Data with R" by C. Bilder and T. Loughin
 
