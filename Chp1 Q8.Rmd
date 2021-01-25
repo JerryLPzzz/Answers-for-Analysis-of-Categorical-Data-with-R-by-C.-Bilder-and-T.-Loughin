@@ -1,0 +1,101 @@
+---
+title: "Chp1 Q8"
+output: rmarkdown::github_document
+editor_options: 
+  chunk_output_type: console
+---
+a).
+The researchers are trying to find out the true confidence interval.
+
+b).
+```{r}
+# Wilson C.I. for box # 5, 6, 7, 9
+alpha = 0.05
+n = 30
+pi.hat = 0
+w = 0
+
+p.tilde <- (w + qnorm(p = 1-alpha/2)^2 / 2) / 
+  (n + qnorm(p = 1-alpha/2)^2)
+
+round(p.tilde + qnorm(p = c(alpha/2, 1-alpha/2)) * 
+        sqrt(n) / (n + qnorm(p = 1 - alpha/2)^2) *
+        sqrt(pi.hat*(1-pi.hat) + qnorm(p = 1-alpha/2)^2/(4*n)), 4)
+```
+
+```{r}
+# Wilson C.I. for box # 1, 4
+alpha = 0.05
+n = 30
+pi.hat = 1/30
+w = 1
+
+p.tilde <- (w + qnorm(p = 1-alpha/2)^2 / 2) / 
+  (n + qnorm(p = 1-alpha/2)^2)
+
+round(p.tilde + qnorm(p = c(alpha/2, 1-alpha/2)) * 
+        sqrt(n) / (n + qnorm(p = 1 - alpha/2)^2) *
+        sqrt(pi.hat*(1-pi.hat) + qnorm(p = 1-alpha/2)^2/(4*n)), 4)
+```
+
+```{r}
+# Wilson C.I. for box # 2, 10
+alpha = 0.05
+n = 30
+pi.hat = 2/30
+w = 2
+
+p.tilde <- (w + qnorm(p = 1-alpha/2)^2 / 2) / 
+  (n + qnorm(p = 1-alpha/2)^2)
+
+round(p.tilde + qnorm(p = c(alpha/2, 1-alpha/2)) * 
+        sqrt(n) / (n + qnorm(p = 1 - alpha/2)^2) *
+        sqrt(pi.hat*(1-pi.hat) + qnorm(p = 1-alpha/2)^2/(4*n)), 4)
+```
+
+```{r}
+# Wilson C.I. for box # 3
+alpha = 0.05
+n = 30
+pi.hat = 4/30
+w = 4
+
+p.tilde <- (w + qnorm(p = 1-alpha/2)^2 / 2) / 
+  (n + qnorm(p = 1-alpha/2)^2)
+
+round(p.tilde + qnorm(p = c(alpha/2, 1-alpha/2)) * 
+        sqrt(n) / (n + qnorm(p = 1 - alpha/2)^2) *
+        sqrt(pi.hat*(1-pi.hat) + qnorm(p = 1-alpha/2)^2/(4*n)), 4)
+```
+
+```{r}
+# Wilson C.I. for box # 8
+alpha = 0.05
+n = 30
+pi.hat = 12/30
+w = 12
+
+p.tilde <- (w + qnorm(p = 1-alpha/2)^2 / 2) / 
+  (n + qnorm(p = 1-alpha/2)^2)
+
+round(p.tilde + qnorm(p = c(alpha/2, 1-alpha/2)) * 
+        sqrt(n) / (n + qnorm(p = 1 - alpha/2)^2) *
+        sqrt(pi.hat*(1-pi.hat) + qnorm(p = 1-alpha/2)^2/(4*n)), 4)
+```
+
+c).
+Based on the intervals, it appears that the probability of an egg hatches is different. For box # 8, its C.I. does not overlap with box # 1, 2, 4, 5, 6, 7, 9, 10.
+
+d). 
+For box # 1, 2, 3, 4, 5, 6, 7, 9, 10, the calculated intervals are reasonable, they are a common interval of (0.0531, 0.1135). For box # 8, the calculated interval is (0.2459, 0.5768). The result seems on the extreme side. Without further experiment, I would suggest to consider this result as an outlier.
+
+e).
+Given d), we may consider the confidence interval for box at 15 Celsius is (0.0531, 0.1135). Take normality assumption, We may use 0.0833 as the approximated probability for an egg to be hatched at 15 Celsius. Thus, we may simulate a binomial sample with 300 trials and probability of 0.0833
+
+```{r}
+set.seed(123)
+bin_sim <- rbinom(n = 1000, size = 300, prob = 0.0833)
+plot(table(simulation = bin_sim))
+```
+
+Based on the simulation, we can conclude that consider the data as 22 successes coming from a binomial distribution with 300 trials is reasonable.
