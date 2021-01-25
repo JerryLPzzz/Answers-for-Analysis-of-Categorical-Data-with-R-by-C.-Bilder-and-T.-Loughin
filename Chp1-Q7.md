@@ -1,8 +1,7 @@
 Chp1 Q7
 ================
 
-A). 
-Since n &lt; 40, we use Wilson CI as recommended by Brown et al.
+A). Since n &lt; 40, we use Wilson CI as recommended by Brown et al.
 
 ``` r
 # Wilson C.I. for box at 10 Celsius
@@ -55,6 +54,5 @@ round(p.tilde + qnorm(p = c(alpha/2, 1-alpha/2)) *
 
     ## [1] 0.6644 0.9266
 
-B). 
-By assessing the three Wilson C.I. calculated above, the
+B). By assessing the three Wilson C.I. calculated above, the
 probabilities could not be the same at each temperature.
