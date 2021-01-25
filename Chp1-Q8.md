@@ -1,8 +1,8 @@
 Chp1 Q8
 ================
 
-a). The researchers are trying to find out the actual confidence
-interval.
+a). The researchers are trying to form a likelihood function for further
+interpretation.
 
 b).
 
@@ -96,25 +96,10 @@ hatches is different. For box \# 8, its C.I. does not overlap with box
 \# 1, 2, 4, 5, 6, 7, 9, 10.
 
 d). For box \# 1, 2, 3, 4, 5, 6, 7, 9, 10, the calculated intervals are
-reasonable, they are a common interval of (0.0531, 0.1135). For box \#
-8, the calculated interval is (0.2459, 0.5768). The result seems on the
-extreme side. Without further experiment, I would suggest to consider
-this result as an outlier.
+reasonable. For box \# 8, the calculated interval is (0.2459, 0.5768).
+The result seems on the extreme side. I think it is normal, because it
+reflects a part of the likelihood function
 
-e). Given d), we may consider the confidence interval for box at 15
-Celsius is (0.0531, 0.1135). Take normality assumption, We may use
-0.0833 as the approximated probability for an egg to be hatched at 15
-Celsius. Thus, we may simulate a binomial sample with 300 trials and
-probability of 0.0833
-
-``` r
-set.seed(123)
-bin_sim <- rbinom(n = 1000, size = 300, prob = 0.0833)
-plot(table(simulation = bin_sim))
-```
-
-![](Chp1-Q8_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
-
-Based on the simulation, we can conclude that consider the data as 22
-successes coming from a binomial distribution with 300 trials is
-reasonable.
+e). The MLE is simply the observed proportion of successes, which is
+22/300. Thus, it is appropriate to consider the data as w = 22 successes
+coming from a binomial distribution with n = 300 trials.
