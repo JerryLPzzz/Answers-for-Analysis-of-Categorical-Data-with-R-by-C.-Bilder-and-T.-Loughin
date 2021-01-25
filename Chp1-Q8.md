@@ -1,7 +1,8 @@
 Chp1 Q8
 ================
 
-a). The researchers are trying to find out the true confidence interval.
+a). The researchers are trying to find out the actual confidence
+interval.
 
 b).
 

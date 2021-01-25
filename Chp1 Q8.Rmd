@@ -5,7 +5,7 @@ editor_options:
   chunk_output_type: console
 ---
 a).
-The researchers are trying to find out the true confidence interval.
+The researchers are trying to find out the actual confidence interval.
 
 b).
 ```{r}
