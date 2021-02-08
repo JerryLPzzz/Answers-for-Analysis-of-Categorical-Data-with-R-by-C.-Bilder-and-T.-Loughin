@@ -1,0 +1,83 @@
+Chp1 Q19
+================
+
+a).
+
+-   Sample for “modified intent to treat”:
+
+16395 healthy men and women (weren’t HIV-positive on PCR before the
+trial started) between the ages of 18 and 30 years in Rayong and Chon
+Buri provinces in Thailand.
+
+-   The population used in this study:
+
+community-based population with largely heterosexual risk.
+
+-   The population ultimately that the researchers would like to extend:
+
+To use the results to advise the entire world.
+
+b).
+
+``` r
+#compute table value
+c.table <- array(data = c(51, 74, 8146, 8124), dim = c(2,2), 
+                 dimnames = list(Trt = c("vaccine", "placebo"), 
+                                 Response = c("HIV", "No HIV")))
+
+#We can use Odds Ratio to solve this problem
+#Odds Ratio
+OR.hat <- c.table[1,1]*c.table[2,2] / (c.table[2,1]*c.table[1,2])
+round(OR.hat, 4) #OR.hat
+```
+
+    ## [1] 0.6873
+
+``` r
+round(1/OR.hat, 4) #inverse of OR.hat
+```
+
+    ## [1] 1.4549
+
+``` r
+alpha <- 0.05 #set 95% CI
+var.log.or <- 1/c.table[1,1] + 1/c.table[1,2] + 
+              1/c.table[2,2] + 1/c.table[2,1] #Variance of log(OR.hat)
+OR.CI <- exp(log(OR.hat) + qnorm(p = c(alpha/2, 1-alpha/2)) *
+               sqrt(var.log.or)) #Compute Wald CI for OR
+round(OR.CI, 4) #95% CI for OR
+```
+
+    ## [1] 0.4805 0.9832
+
+``` r
+rev(round(1/OR.CI, 4)) #inverse of 95% CI for OR
+```
+
+    ## [1] 1.0171 2.0812
+
+The estimated odd of contracting HIV is 68.73% as large as when the
+vaccine is given than when a placebo is given.
+
+The 95% CI is (0.4805 &lt; OR &lt; 0.9832). Because 1 is not within the
+interval, there is sufficient evidence to indicate the vaccine does
+decrease the true odds of contracting HIV
+
+Alternatively, we could interpret the inverted odds ratio in terms of
+protection due to vaccination: The estimated odds of being HIV free are
+1.4549 times as large as when the vaccine is given than when the placebo
+is given. The 95% confidence interval for the inverted odds ratio is
+(1.0171, 2.0812).
+
+c).
+
+Findings from an HIV vaccine clinical trial reported that a vaccine for
+HIV have worked for the first time in the history. A sample of 16395
+healthy men and women (weren’t HIV-positive on PCR before the trial
+started) between the ages of 18 and 30 years in Rayong and Chon Buri
+provinces in Thailand participated in this trial. They represented a
+community-based population with largely heterosexual risk. In terms of
+protection due to vaccination, the estimated odds of being HIV free are
+1.45 times as large as when the vaccine is given than when the placebo
+is given. Although the results show only a modest benefit, they offer
+insight for future research
