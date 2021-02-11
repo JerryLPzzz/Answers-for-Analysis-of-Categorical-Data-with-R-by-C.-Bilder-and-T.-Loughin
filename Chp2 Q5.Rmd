@@ -81,17 +81,12 @@ beta1 <- -0.1156
   # Set seed number to reproduce results and simulate responses
   set.seed(123)
   y<-rbinom(n = length(x1), size = 966, prob = pi)/966
-  head(data.frame(y, x1, pi), n = 10)  # Check
   
   # Estimate model
   mod.fit<-glm(formula = y ~ x1, family = binomial(link = logit))  # no data argument needed
   mod.fit$coefficients
-  cov.mat<-vcov(mod.fit)
-  sqrt(cov.mat[2,2])  # sqrt( Var^(beta^_1) )
- 
 
-  
-  
+
 predict.data <- data.frame(x1 = c(31,72)) #create a data frame contains desired temperatures. 
 
 linear.pred2 <- predict(object = mod.fit,

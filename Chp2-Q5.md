@@ -124,22 +124,7 @@ beta1 <- -0.1156
   # Set seed number to reproduce results and simulate responses
   set.seed(123)
   y<-rbinom(n = length(x1), size = 966, prob = pi)/966
-  head(data.frame(y, x1, pi), n = 10)  # Check
-```
-
-    ##             y       x1         pi
-    ## 1  0.04451346 70.19164 0.04612603
-    ## 2  0.05072464 69.42871 0.05016558
-    ## 3  0.64803313 40.76704 0.59202195
-    ## 4  0.57660455 41.45802 0.57259656
-    ## 5  0.42443064 47.01099 0.41351082
-    ## 6  0.43167702 44.98837 0.47111817
-    ## 7  0.31469979 49.54760 0.34463576
-    ## 8  0.55693582 42.88725 0.53176576
-    ## 9  0.35714286 49.47760 0.34646579
-    ## 10 0.08385093 64.07042 0.08935458
-
-``` r
+  
   # Estimate model
   mod.fit<-glm(formula = y ~ x1, family = binomial(link = logit))  # no data argument needed
 ```
@@ -152,13 +137,6 @@ beta1 <- -0.1156
 
     ## (Intercept)          x1 
     ##   5.0921633  -0.1157363
-
-``` r
-  cov.mat<-vcov(mod.fit)
-  sqrt(cov.mat[2,2])  # sqrt( Var^(beta^_1) )
-```
-
-    ## [1] 0.008086077
 
 ``` r
 predict.data <- data.frame(x1 = c(31,72)) #create a data frame contains desired temperatures. 
