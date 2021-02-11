@@ -4,10 +4,26 @@ output: rmarkdown::github_document
 editor_options: 
   chunk_output_type: inline
 ---
+a). The potential problem: scientists may learn something new from each launch and make improvement accordingly. This debunks the assumption of independence. This assumption is necessary, because if the potential problem is true, it means that the data collected does not capture everything and inferences based on such data would be misleading.
 
+b). The estimated logistic regression model is: logit(pi.hat) = 2.5202 - 0.0983Temp + 0.0085Pressure
 ```{r}
-challenger.df<-read.table(file = "challenger.csv", 
+challenger <- read.table(file = "challenger.csv", 
                           header = TRUE, sep = ",")
-head(challenger.df)
+
+challenger.fit <- glm(formula = O.ring/Number ~ Temp + Pressure, 
+                      family = binomial, 
+                      data = challenger) 
+#there is nothing wrong with this warning message, glm() is just picky when it comes to specifying binomial models
+
+summary(challenger.fit)
 ```
 
+c). According to LRTs, both explanatory variables are not important
+```{r}
+library(car)
+Anova(challenger.fit, test = "LR") #The Anova() function produces LRTs using the test = "LR" argument value
+#there is nothing wrong with this warning message
+```
+
+d). Remove variable Pressure from the model was done because it has a p-value of 0.6123. In this case, we fail to reject null hypothesis, cannot conclude alternative hypothesis that variable Pressure is significant. The potential problem with removing variable Pressure is that there will be only one variable Temp left in this model and this variable may not capture everything that is influencial to the response variable. 
