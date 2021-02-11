@@ -1,0 +1,13 @@
+---
+title: "Chp2 Q4"
+output: rmarkdown::github_document
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r}
+challenger.df<-read.table(file = "challenger.csv", 
+                          header = TRUE, sep = ",")
+head(challenger.df)
+```
+
