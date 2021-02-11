@@ -82,5 +82,6 @@ p-value of 0.6123. In this case, we fail to reject null hypothesis,
 cannot conclude alternative hypothesis that variable Pressure is
 significant. The potential problem with removing variable Pressure is
 that there will be only one variable Temp left in this model and this
-variable may not capture everything that is influencial to the response
-variable.
+variable may not capture everything that is influential to the response
+variable. Moreover, if we do prediction with one explanatory variable
+Temp, then the set of predicted value in a range would a straight line.
