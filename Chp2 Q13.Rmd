@@ -1,0 +1,75 @@
+---
+title: "Chp2 Q13"
+output: rmarkdown::github_document
+editor_options: 
+  chunk_output_type: console
+---
+a).
+```{r}
+c.table<-array(data = c(251, 48, 34, 5), 
+               dim = c(2,2), 
+               dimnames = list(First = c("made", "missed"),
+               Second = c("made", "missed"))) #c.table created
+
+bird1 <- as.data.frame(as.table(c.table))
+#"as.table" function transform "c.table" from class array to
+# class table. "as.data.frame" transform class table to class
+# data frame and list 'First', 'Second', 'Freq' in each column.
+
+trials <- aggregate(formula = Freq ~ First, 
+                    data = bird1, FUN = sum)
+#"aggregate" function computes summary statistics. Inside
+# brackets, it sums Freq based on First regardless of Second. 
+
+success <- bird1[bird1$Second == "made",]
+#Inside brackets, provides a list of logical values where
+# Second is made retruns TRUE, otherwise returns FALSE,
+# regardless of First. Outside brackets, given the logical
+# values, it subsets first two rows where Second is made.
+
+bird2 <- data.frame(First = success$First,
+                    success = success$Freq, 
+                    trials = trials$Freq)
+#"data.frame" function creates data frame. In this case, it has
+# three columns, their names are First, success, trials. First
+# has two levels: made and missed. Success has two values based
+# on Freq in success, trials has two values based on Freq in
+# trials.
+```
+
+b).
+```{r}
+logistic.fit <- glm(formula = success/trials ~ First, 
+                    weights = trials,
+                    family = binomial,
+                    data = bird2)
+#Estimate a logistic regression model
+summary(logistic.fit)
+```
+
+c). The values computed are different comparing the example given in section 1.2.5. However, they are telling the same thing. The inverted value in section 1.2.5 equals the value computed here. it is a matter of interpretation.
+```{r}
+#The estimated odds of a successful second free throw
+#attempt are 1.30 times as large as when the first free 
+#throw is missed than when the first free throw is made.
+exp(logistic.fit$coefficients[2]) #calculate OR
+
+exp(confint.default(object = logistic.fit, 
+                    parm = "Firstmissed", 
+                    level = 0.95)) #Wald CI for OR
+
+exp(confint(object = logistic.fit, 
+            parm = "Firstmissed", 
+            level = 0.95)) #Profile LR intervals for OR
+```
+
+d). The results computed are same comparing the example given in section 1.2.3. The decision is to not reject the null hypothesis, can't conclude that there is a significant change in Bird's second free throw success percentage over the possible outcomes of the first attempt.
+```{r}
+summary(logistic.fit)$coefficients[2,][4] #p-value based on Wald test
+
+library(car) #load necessary package for LRTs
+Anova(logistic.fit, test = "LR") #p-value based on LRTs
+```
+
+e). Similarities occurred between the calculation here using logistic regression and the corresponding calculations in Chapter 1 is because that the binary table (Bird) given fits the assumption for logistic regression 
+
