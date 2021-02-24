@@ -1,0 +1,38 @@
+---
+title: "Chp2 Q19"
+output: rmarkdown::github_document
+editor_options: 
+  chunk_output_type: console
+---
+Compute Wald test for hypothesis test
+```{r}
+#load provided dataframe
+HCW <- read.table(file = "healthcare_worker.csv",
+                        header = TRUE, 
+                        sep = ",")
+
+#fit a logistic regression model
+logistic.fit <- glm(formula = Hepatitis/Size ~ Occup.group, 
+                    weights = Size,
+                    family = binomial,
+                    data = HCW)
+#compute summary table
+summary(logistic.fit)$coefficients
+#According to p-value based on Wald test (0.710, 0.212, 0.157, 0.685),
+# there is no evidence of an occupational group effect on hepatitis status.
+#We may explore Odds Ratio and their Confidence Interval for more explanation.
+```
+
+Compute Odds Ratios and their Confidence Intervals
+```{r}
+exp(logistic.fit$coefficients[2:5]) #calculate OR
+
+exp(confint.default(object = logistic.fit, 
+                    parm = c(2:5), 
+                    level = 0.95)) #Wald CI for OR
+#All confidence intervals for odds ratios have 1 within the interval, 
+# which suggests that there is insufficient evidence to indicate an 
+# actual evidence of an occupational group effect on hepatitis status.
+#It is preferable to say that there is not sufficient evidence of an effect.
+```
+
