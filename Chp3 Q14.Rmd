@@ -1,0 +1,180 @@
+---
+title: "Chp 3 Q14"
+output: rmarkdown::github_document
+editor_options: 
+  chunk_output_type: console
+---
+
+a).
+```{r}
+pol <- read.table(file = 
+"C:\\Users\\Moon\\Desktop\\New folder\\pol_ideol_data.csv", 
+                  header = TRUE, sep = ",")
+
+pol$gender <- factor(x = pol$gender, levels = c("F", "M"))
+pol$party <- factor(x = pol$party, levels = c("D", "R"))
+pol$ideol <- factor(x = pol$ideol, levels = c("VL", "SL", "M", "SC", "VC"))
+```
+
+b).
+```{r}
+c.table <- xtabs(formula = count ~ party + ideol + gender, data = pol)
+ftable(x = c.table, row.vars = c("gender", "party"), col.vars = "ideol")
+```
+
+ci).
+```{r}
+#proportional odds regression
+library(package = MASS)  
+mod.fit.ord<-polr(formula = ideol ~ party + gender + party:gender, 
+                  data = pol, weights = count, method = "logistic")
+
+summary(mod.fit.ord)
+#LRTs
+library(package = car)  
+Anova(mod.fit.ord)
+#Using proportional odds regression, due to large test statistic values for 
+#party and party:gender, as well as the corresponding LRT provided by Anova()
+#function, there is sufficient evidence that these are important explanatory
+#variables.
+
+
+#multinomial regression
+library(nnet)
+mod.fit <- multinom(formula = ideol ~ party + gender + party:gender, 
+                    data = pol, weights = count)
+summary(mod.fit)
+#LRTs
+Anova(mod.fit)
+#Using multinomial regression, the LRT for the interaction gives a p-value 
+#of 0.51 indicating there is not sufficient evidence of an interaction. 
+#Moreover, party has a very small p-value and gender has a slightly small 
+#p-value. Thus, there is sufficient evidence that party has an effect on 
+#ideology and marginal evidence that gender has an effect on ideology.
+```
+
+cii). For example, female.D means Female & Democrat
+```{r}
+#estimate probabilities for each ideology level based on 
+#proportional odds regression
+pi.hat.prop <- predict(object = mod.fit.ord, type = "probs")
+female.D.pred.prop <- pi.hat.prop[1,]
+female.D.pred.prop
+
+female.R.pred.prop <- pi.hat.prop[6,]
+female.R.pred.prop
+
+male.D.pred.prop <- pi.hat.prop[11,]
+male.D.pred.prop
+
+male.R.pred.prop <- pi.hat.prop[16,]
+male.R.pred.prop
+
+
+#estimate probabilities for each ideology level based on 
+#multinomial regression
+pi.hat.mult <- predict(object = mod.fit, type = "probs")
+female.D.pred.mult <- pi.hat.mult[1,]
+female.D.pred.mult 
+
+female.R.pred.mult  <- pi.hat.mult[6,]
+female.R.pred.mult 
+
+male.D.pred.mult  <- pi.hat.mult[11,]
+male.D.pred.mult 
+
+male.R.pred.mult  <- pi.hat.mult[16,]
+male.R.pred.mult 
+```
+
+ciii).
+```{r}
+#three-dimensional contingency table for estimated count
+#based on proportional odds regression
+pred.prop.count <- c(
+sum(pol[1:5, 4])*female.D.pred.prop,
+sum(pol[6:10, 4])*female.R.pred.prop,
+sum(pol[11:15, 4])*male.D.pred.prop,
+sum(pol[16:20, 4])*male.R.pred.prop)
+
+c.table1 <- xtabs(formula = pred.prop.count ~ pol$party + pol$ideol + pol$gender)
+ftable(x = c.table1, row.vars = c("pol$gender", "pol$party"), 
+       col.vars = "pol$ideol")
+
+
+#three-dimensional contingency table for estimated count
+#based on multinomial regression
+pred.mult.count <- c(
+sum(pol[1:5, 4])*female.D.pred.mult,
+sum(pol[6:10, 4])*female.R.pred.mult,
+sum(pol[11:15, 4])*male.D.pred.mult,
+sum(pol[16:20, 4])*male.R.pred.mult)
+
+c.table2 <- xtabs(formula = pred.mult.count ~ pol$party + pol$ideol + pol$gender)
+ftable(x = c.table2, row.vars = c("pol$gender", "pol$party"), 
+       col.vars = "pol$ideol")
+```
+
+civ).
+```{r}
+#observed
+c.table <- xtabs(formula = count ~ party + ideol + gender, data = pol)
+ftable(x = c.table, row.vars = c("gender", "party"), col.vars = "ideol")
+```
+Comparing the observed counts, estimated count based on multinomial regression are same, estimated count based on proportional odds regression are different. This suggests that multinomial regression fits the data well. Proportional odds regression fits the data poorly.
+
+
+cv).
+```{r}
+#odds ratio for estimated count based on proportional odds regression
+pol.table.prop.count <- xtabs(formula = pred.prop.count ~ 
+                                pol$gender + pol$party + pol$ideol)
+prop.count.odds <- pol.table.prop.count[1,1,]*pol.table.prop.count[2,2,]/ 
+  (pol.table.prop.count[2,1,]*pol.table.prop.count[1,2,])
+prop.count.odds
+1/prop.count.odds
+#The estimated odd of being republican conditioning on very liberal is 14% as
+#large as when the target is female than when the target is male.
+
+#The estimated odd of being republican conditioning on slightly liberal is 0.9%
+#as large as when the target is female than when the target is male.
+
+#The estimated odd of being democratic conditioning on moderate is 28% as large
+#as when the target is female than when the target is male.
+
+#The estimated odd of being democratic conditioning on slightly conservative is
+#69% as large as when the target is female than when the target is male.
+
+#The estimated odd of being democratic conditioning on very conservative is 105%
+#as large as when the target is female than when the target is male.
+
+
+
+#odds ratio for estimated count based on multinomial regression
+pol.table.mult.count <- xtabs(formula = pred.mult.count ~ 
+                                pol$gender + pol$party + pol$ideol)
+mult.count.odds <- pol.table.mult.count[1,1,]*pol.table.mult.count[2,2,]/ 
+  (pol.table.mult.count[2,1,]*pol.table.mult.count[1,2,])
+mult.count.odds
+1/mult.count.odds
+#The estimated odd of being republican conditioning on very liberal is 22% as
+#large as when the target is female than when the target is male.
+
+#The estimated odd of being republican conditioning on slightly liberal is 12%
+#as large as when the target is female than when the target is male.
+
+#The estimated odd of being democratic conditioning on moderate is 60% as large
+#as when the target is female than when the target is male.
+
+#The estimated odd of being democratic conditioning on slightly conservative is
+#47% as large as when the target is female than when the target is male.
+
+#The estimated odd of being democratic conditioning on very conservative is 47%
+#as large as when the target is female than when the target is male.
+```
+
+
+d). Comparing the results for the two models, multinomial regression is more appropriate for this setting. The predictions and odds ratios based on multinomial regression are the same comparing the observed data. This indicates that multinomial regression fits the data perfectly.
+
+
+
