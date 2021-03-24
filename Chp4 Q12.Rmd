@@ -1,0 +1,96 @@
+---
+title: "Chp 4 Q12"
+output: rmarkdown::github_document
+editor_options: 
+  chunk_output_type: console
+---
+a).
+```{r}
+#create data frame
+alldata <- read.table("C:\\Users\\Moon\\Desktop\\New folder\\PolIdeolData.csv", 
+                      sep = ",", header = TRUE)
+
+lin.score1 <- c(rep(x = c(1,2,3,4,5), times = 4))
+lin.score2 <- c(rep(x = c(0,2,3,4,6), times = 4))
+extrm.score <- c(rep(x = c(2,1,0,1,2), times = 4))
+alldata <- data.frame(alldata, lin.score1, lin.score2, extrm.score)
+
+#try score set 0-2-3-4-6
+mod.homo.lin2.PI <- glm(formula = count ~ gender*party + gender*ideol + party*lin.score2, 
+                        family = poisson(link = "log"), data = alldata)
+summary(mod.homo.lin2.PI)
+library(car)
+Anova(mod.homo.lin2.PI)
+
+#try score set 2-1-0-1-2
+mod.extrm.score.PI <- glm(formula = count ~ gender*party + gender*ideol + party*extrm.score, 
+                        family = poisson(link = "log"), data = alldata)
+summary(mod.extrm.score.PI)
+Anova(mod.extrm.score.PI)
+```
+Refitting the model with score set 0-2-3-4-6 provides a very similar but result comparing with score set 1-2-3-4-5.
+
+Refitting the model with score set 2-1-0-1-2 doesn't provide a good result. There is no linear association between party and ideology. Hence, the test suggests one party or gender doesn't hold more extreme views than the other.
+
+b). 
+```{r}
+#try score set 1-2-3-4-5
+mod.homo.lin1.PI <- glm(formula = count ~ gender*party + gender*ideol + party*lin.score1, 
+                        family = poisson(link = "log"), data = alldata)
+
+#GI interaction of score set 1-2-3-4-5
+Anova(mod.homo.lin1.PI)[6,]
+#GI interaction of score set 0-2-3-4-6
+Anova(mod.homo.lin2.PI)[6,]
+#GI interaction of score set 2-1-0-1-2
+Anova(mod.extrm.score.PI)[6,]
+```
+Reduced number of parameters in each still provides an adequate explanation for the association.
+
+Based on alpha = 0.05, the association is significant in the second and third case.
+
+c).
+```{r}
+contr.mat <- rbind(c(rep(0, 7), 1, 0, 0, 0, 0, 0), 
+                   c(rep(0, 7), 0,-1, 0, 1, 0, 0),
+                   c(rep(0, 7), 0, 0, 0, 1, 0, 0),
+                   c(rep(0, 7), 0, 0,-1, 1, 0, 0),
+                   c(rep(0, 7), 0, 0, 0, 1,-1, 0),
+                   c(rep(0, 7), 0, 1, 0, 0, 0, 0),
+                   c(rep(0, 7), 0, 1,-1, 0, 0, 0),
+                   c(rep(0, 7), 0, 1, 0, 0,-1, 0),
+                   c(rep(0, 7), 0, 0,-1, 0, 0, 0),
+                   c(rep(0, 7), 0, 0, 0, 0,-1, 0),
+                   c(rep(0, 7), 0, 0, 1, 0,-1, 0),
+                   c(rep(0, 7), 0, 0, 0, 0, 0, 1),
+                   c(rep(0, 7), 0, 0, 0, 0, 0, 2),
+                   c(rep(0, 7), 0, 0, 0, 0, 0, 3),
+                   c(rep(0, 7), 0, 0, 0, 0, 0, 4)
+                   )
+
+check.na <- is.na(mod.homo.lin1.PI$coefficients)
+mod.homo.lin1.PI$coefficients <- mod.homo.lin1.PI$coefficients[!check.na]
+
+library(multcomp)
+wald <- glht(mod.homo.lin1.PI, linfct = contr.mat)
+wald.ci <- round(exp(confint(wald, calpha = qnorm(0.975))$confint), 2)
+row.names(wald.ci) <- c("GP Rep | M:F", "GI VC:SC | M:F", 
+                        "GI VC:M | M:F", "GI VC:SL | M:F", 
+                        "GI VC:VL | M:F", "GI SC:M | M:F", 
+                        "GI SC:SL | M:F", "GI SC:VL | M:F", 
+                        "GI M:SL | M:F", "GI M:VL | M:F", 
+                        "GI SL:VL | M:F", "PI REP | 1 Cat Ideol", 
+                        "PI REP | 2 Cat Ideol", "PI REP | 3 Cat Ideol", 
+                        "PI REP | 4 Cat Ideol")
+colnames(wald.ci) <- c("Estimate", "Lower CI", "Upper CI")
+wald.ci[2:11,]
+```
+The GI odds ratio are shown above.
+
+To interpret them, for example, in the first line: between very conservative and slightly conservative, male are more likely to be very conservative is 0.88 times as high than female with a 95% Wald CI of (0.55<OR<1.42). Similarly for the rest.
+
+Comparing the CI for each odds ratio, they give similar interpretation.
+
+d). The reduction of association parameters comes at the cost of more-structured assumptions regarding the nature of the log-odds ratios. Thus, when a test for Ho is rejected, it doesn't imply the association is entirely linear. There might be additional structure that wasn't captured. When a test for Ho is not rejected, it only implies insufficient evidence of linear-by-linear association, not that there is no association.
+
+
