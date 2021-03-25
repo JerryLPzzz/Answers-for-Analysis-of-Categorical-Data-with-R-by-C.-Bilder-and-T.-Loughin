@@ -1,0 +1,46 @@
+---
+title: "Chp4 Q30"
+output: rmarkdown::github_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+#Create data frame
+BirdData1 <- function(){
+  Guild <- c("Air-Arth","Leaf-Arth","Wood-Arth","Ground-Arth",
+             "Fruit","Seeds","Nectar")
+  Degradation.high <- c(rep("High",7))
+  Degradation.moderate <- c(rep("Moderate",7))
+  Degradation.low <- c(rep("Low",7))
+  Guild <- c(rep(Guild,3))
+  
+  High.count <- c(8,69,2,25,20,7,100)
+  Moderate.count <- c(39,139,39,57,48,20,177)
+  Low.count <- c(48,131,50,115,16,19,190)
+  
+  BirdData <- data.frame(Guild = Guild,
+                         Degradation = c(Degradation.high,
+                                         Degradation.moderate,
+                                         Degradation.low),
+                         Count = c(High.count,Moderate.count,Low.count))
+  return(BirdData)
+}
+BirdData <- BirdData1()
+
+#there is no level for "Degradation", we need level for it.
+BirdData$Degradation <- factor(BirdData$Degradation, levels = c("High","Moderate","Low"))
+
+#Create contingency table
+GPI3 <- xtabs(formula= Count ~ Guild + Degradation, data=BirdData)
+
+#fit with poison regression
+poi.fit <- glm(Count ~ Guild*Degradation,
+               family = poisson(link = "log"), data = BirdData)
+
+#check out odds ratio based on estimated coefficient at interaction terms.
+summary(poi.fit)
+```
+For example, at "GuildFruit:DegradationModerate". Since we are using High level degradation as a base line, we would interpret this line as: the estimate for OR is exp(-0.7087), the ratio of fruit guild is exp(-0.7087)-1 higher in Moderate level degradation then in High level degradation.
+
+Keep this concept in mind, we can find that when we interpret -2.0149 and -0.2657, those two values represent largest and smallest odds ratios. Hence, we can conclude that fruit guild is more affected by habitat degradation, ground guild is less affected by habitat degradation.
