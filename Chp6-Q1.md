@@ -1,0 +1,51 @@
+Chp6 Q1
+================
+
+MLE for the overall true prevalence of hypertension: 0.0321  
+corresponding 95% Wald confidence interval: (0.0314, 0.0329)
+
+``` r
+# Computations according to the question
+n <- 1000000
+alpha <- 0.05
+pi.hat <- 0.116
+Se <- 0.930
+Sp <- 0.911
+
+# Point estimate
+pi.tilde.hat <- (pi.hat + Sp - 1)/(Se + Sp - 1)#MLE for the overall true prevalence of hypertension
+data.frame(pi.hat, pi.tilde.hat)
+```
+
+    ##   pi.hat pi.tilde.hat
+    ## 1  0.116   0.03210464
+
+``` r
+# Variance
+var.pi.hat <- pi.hat*(1 - pi.hat)/n
+var.pi.tilde.hat <- pi.hat*(1 - pi.hat)/(n*(Se + Sp - 1)^2)
+data.frame(var.pi.hat, var.pi.tilde.hat)
+```
+
+    ##    var.pi.hat var.pi.tilde.hat
+    ## 1 1.02544e-07     1.449834e-07
+
+``` r
+# CIs
+# Wald for pi
+pi.hat + qnorm(p = c(alpha/2, 1 - alpha/2))*sqrt(var.pi.hat)
+```
+
+    ## [1] 0.1153724 0.1166276
+
+``` r
+# Wald for pi.tilde
+pi.tilde.hat + qnorm(p = c(alpha/2, 1 - alpha/2))*sqrt(var.pi.tilde.hat)
+```
+
+    ## [1] 0.03135835 0.03285093
+
+Given that the sensitivity and specificity of the procedure were
+estimated to be 0.93 and 0.911, the true prevalence of hypertension are
+smaller than surveyed prevalence of hypertension. In this case, testing
+error will impact the true prevalence of hypertension.
