@@ -1,0 +1,42 @@
+---
+title: "Chp6 Q4"
+output: rmarkdown::github_document
+editor_options: 
+  chunk_output_type: console
+---
+a).
+```{r}
+set1 <- read.csv(file = "C:\\Users\\Moon\\Desktop\\New folder\\HIVKenya.csv")
+is.factor(set1$marital.status)#check if marital.status is considered a categorical variable
+set1$marital.status = as.factor(set1$marital.status)#set marital.status as a categorical variable
+is.factor(set1$marital.status)#check again if marital.status is considered a categorical variable
+
+mod.fit <- glm(formula = hiv ~ ., data = set1, 
+               family = binomial(link = logit))#estimate according to the question
+summary(mod.fit)
+```
+
+
+b).
+```{r}
+library(car)
+Anova(mod.fit)#LRTs on each explanatory variables
+```
+It seems like there is a marginal evidence that marital status and education are significant.
+
+
+c).
+```{r}
+mod.empty <- glm(formula = hiv ~ 1, data = set1, 
+               family = binomial(link = logit))
+step.sel <- step(object = mod.empty, scope = list(upper = mod.fit), 
+                 k = log(nrow(set1)), trace = TRUE)
+#the best fitting model for the data only includes education as its 
+#explanatory variable according to the stepwise selection method
+
+best.fit <- glm(formula = hiv ~ education, data = set1, 
+               family = binomial(link = logit)) #fit the best fitting model
+
+exp(best.fit$coefficients[2]) #odds ratio
+```
+to interpret the given odds ratio, one unit increase in education (Ex. from none(1) to primary(2)) are 65% more likely to have hiv
