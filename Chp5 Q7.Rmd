@@ -1,0 +1,32 @@
+---
+title: "Chp5 Q7"
+output: rmarkdown::github_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+placekick <- read.table(file = "C:\\Users\\Moon\\Desktop\\New folder\\Placekick.csv", 
+                        header = TRUE, sep = ",")
+
+
+# Must first fit the smallest and largest models to be considered
+empty.mod <- glm(formula = good ~ 1, family = binomial(link = logit), data = placekick)
+full.mod <- glm(formula = good ~ ., family = binomial(link = logit), data = placekick)
+
+
+# The step() function uses information criteria for variable selection, 
+#  k = 2 (default) gives AIC, k = log(nrow(...)) gives BIC when "..." is
+#  replaced with the data set name
+
+step.sel <- step(object = empty.mod, scope = list(upper = full.mod), 
+                 k = log(nrow(placekick)), trace = TRUE)
+BIC(step.sel) 
+#the final model includes distance and PAT as its 
+#explanatory variables. It has a BIC of 784.2
+
+#for each possible change to the model such as add wind as its
+#explanatory variables, the BIC would increases to 788.71. 
+#The table is provided here as a reference.
+```
+
