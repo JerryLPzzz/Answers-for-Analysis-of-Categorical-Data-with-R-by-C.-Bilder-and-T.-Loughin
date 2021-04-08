@@ -1,0 +1,78 @@
+---
+title: "Chp5 Q17"
+output: rmarkdown::github_document
+editor_options: 
+  chunk_output_type: console
+---
+
+a).
+```{r}
+y <- c(0:10)
+yhat <- 2
+pear <- (y-yhat)/sqrt(yhat)
+```
+
+b).
+```{r}
+pp <- 1-ppois(y,yhat)
+pn <- 1-pnorm(pear)
+```
+
+c). 
+```{r}
+yhat_2 <- format(cbind(y,pear,pp,pn),scientific=FALSE,digits = 1)
+yhat_2
+```
+There is no Pearson residuals below 2 that have probability < 0.05
+There is no Pearson residuals above 2 that have probability > 0.05
+
+d). Standardized residuals can be interpreted approximately as observations from a standard normal distribution. When y_hat=2 and y<-c(0:10), the pearson residuals inputted do not contain extreme values.
+
+
+
+e).
+```{r}
+y <- c(0:10)
+yhat <- 1
+pear <- (y-yhat)/sqrt(yhat)
+
+pp <- 1-ppois(y,yhat)
+pn <- 1-pnorm(pear)
+
+yhat_1 <- format(cbind(y,pear,pp,pn),scientific=FALSE,digits = 1)
+yhat_1
+
+
+y <- c(0:10)
+yhat <- 0.5
+pear <- (y-yhat)/sqrt(yhat)
+
+pp <- 1-ppois(y,yhat)
+pn <- 1-pnorm(pear)
+
+yhat_0.5 <- format(cbind(y,pear,pp,pn),scientific=FALSE,digits = 1)
+yhat_0.5
+
+
+y <- c(0:10)
+yhat <- 0.25
+pear <- (y-yhat)/sqrt(yhat)
+
+pp <- 1-ppois(y,yhat)
+pn <- 1-pnorm(pear)
+
+yhat_0.25 <- format(cbind(y,pear,pp,pn),scientific=FALSE,digits = 1)
+yhat_0.25
+
+
+y <- c(0:10)
+yhat <- 0.1
+pear <- (y-yhat)/sqrt(yhat)
+
+pp <- 1-ppois(y,yhat)
+pn <- 1-pnorm(pear)
+
+yhat_0.1 <- format(cbind(y,pear,pp,pn),scientific=FALSE,digits = 1)
+yhat_0.1
+```
+Smaller y_hat leads to large pearson residuals. By repeating these steps, I don't feel comfortable using large pearson residuals. Because in those cases, Standardized residuals can't be interpreted approximately as observations from a standard normal distribution
